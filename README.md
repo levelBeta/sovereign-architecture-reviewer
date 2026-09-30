@@ -48,6 +48,13 @@ partially-fixed / after state, proving the detection logic is consistent:
 
 ## Architecture
 
+1. **Config (JSON)** — the architecture being reviewed
+2. → **Rules engine** (`rules.py`) — deterministic, no LLM — produces findings
+3. → **Local LLM** (Ollama, `qwen2.5:3b`) — explains each finding in plain English
+4. → **Streamlit UI** (`app.py`) — streams results, shows severity + control mapping
+   - → **Sovereignty check** (`sovereignty.py`) — confirms 0 outbound connections
+   - → **Audit log** (`audit.py`) — hash-chained, tamper-evident record of every review
+
 
 ## Governance features
 
