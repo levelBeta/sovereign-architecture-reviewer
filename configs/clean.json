@@ -1,0 +1,50 @@
+{
+  "name": "Synthetic AI platform - CLEAN",
+  "resources": [
+    {
+      "id": "customer-data-bucket",
+      "type": "object_storage",
+      "data_class": "regulated",
+      "region": "ap-southeast-2",
+      "encrypted_at_rest": true,
+      "public_access": false,
+      "versioning": true
+    },
+    {
+      "id": "customer-db",
+      "type": "database",
+      "data_class": "regulated",
+      "region": "ap-southeast-2",
+      "encrypted_at_rest": true,
+      "publicly_accessible": false,
+      "backups": true
+    },
+    {
+      "id": "inference-api",
+      "type": "service",
+      "tls": true,
+      "mtls": true,
+      "ingress": [
+        {
+          "port": 443,
+          "cidr": "10.0.0.0/8"
+        }
+      ],
+      "credentials": "workload_identity",
+      "secrets_in_plaintext": false
+    },
+    {
+      "id": "llm-endpoint",
+      "type": "llm_endpoint",
+      "auth": "oidc",
+      "provider_api": "portable",
+      "abstraction_layer": true,
+      "egress": "allowlist"
+    },
+    {
+      "id": "platform",
+      "type": "platform",
+      "audit_logging": true
+    }
+  ]
+}

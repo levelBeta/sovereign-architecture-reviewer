@@ -1,0 +1,50 @@
+{
+  "name": "Synthetic AI platform - HALF-FIXED",
+  "resources": [
+    {
+      "id": "customer-data-bucket",
+      "type": "object_storage",
+      "data_class": "regulated",
+      "region": "us-east-1",
+      "encrypted_at_rest": true,
+      "public_access": false,
+      "versioning": false
+    },
+    {
+      "id": "customer-db",
+      "type": "database",
+      "data_class": "regulated",
+      "region": "us-east-1",
+      "encrypted_at_rest": false,
+      "publicly_accessible": true,
+      "backups": false
+    },
+    {
+      "id": "inference-api",
+      "type": "service",
+      "tls": true,
+      "mtls": false,
+      "ingress": [
+        {
+          "port": 8080,
+          "cidr": "0.0.0.0/0"
+        }
+      ],
+      "credentials": "shared_admin",
+      "secrets_in_plaintext": true
+    },
+    {
+      "id": "llm-endpoint",
+      "type": "llm_endpoint",
+      "auth": "none",
+      "provider_api": "proprietary_only",
+      "abstraction_layer": false,
+      "egress": "unrestricted"
+    },
+    {
+      "id": "platform",
+      "type": "platform",
+      "audit_logging": true
+    }
+  ]
+}
