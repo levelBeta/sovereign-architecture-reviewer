@@ -45,7 +45,8 @@
       "id": "platform",
       "type": "platform",
       "audit_logging": true,
-      "mfa_enabled": false
+      "mfa_enabled": false,
+      "monitoring_enabled": false
     }
   ]
 }

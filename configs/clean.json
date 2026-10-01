@@ -62,6 +62,7 @@
       "type": "platform",
       "audit_logging": true,
       "mfa_enabled": true,
+      "monitoring_enabled": true,
       "tags": {
         "owner": "platform-ops",
         "cost_center": "CC-1000"

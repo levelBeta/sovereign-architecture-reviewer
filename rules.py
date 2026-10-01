@@ -89,8 +89,10 @@ RULES = [
       "Apply standard cost-center and owner tags to all resources.",missing_tags),
  Rule("R16","No multi-factor authentication on admin access","high",("platform",),SEC,IMPL,"Verify explicitly",False,
       "Require MFA for all administrative and break-glass accounts.",flag("mfa_enabled",False,"MFA not enforced on admin access")),
+ Rule("R20","Monitoring and alerting disabled","high",("platform",),OPS,TEST,"Verify explicitly",False,
+      "Enable centralized monitoring with alerting on key security and reliability signals.",
+      flag("monitoring_enabled",False,"monitoring and alerting disabled")),
 ]
-
 def evaluate(config):
     findings = []
     for res in config["resources"]:
