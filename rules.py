@@ -87,6 +87,8 @@ RULES = [
  Rule("R18","Missing cost/ownership tags","medium",
       ("object_storage","database","service","llm_endpoint","platform"),COST,CLASS,"n/a",False,
       "Apply standard cost-center and owner tags to all resources.",missing_tags),
+ Rule("R16","No multi-factor authentication on admin access","high",("platform",),SEC,IMPL,"Verify explicitly",False,
+      "Require MFA for all administrative and break-glass accounts.",flag("mfa_enabled",False,"MFA not enforced on admin access")),
 ]
 
 def evaluate(config):

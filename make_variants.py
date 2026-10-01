@@ -17,7 +17,7 @@ clean = {
                    "tags": {"owner": "ml-platform-team", "cost_center": "CC-1002"}},
  "llm-endpoint": {"auth": "oidc", "provider_api": "portable", "abstraction_layer": True, "egress": "allowlist",
                   "tags": {"owner": "ml-platform-team", "cost_center": "CC-1002"}},
- "platform": {"audit_logging": True, "tags": {"owner": "platform-ops", "cost_center": "CC-1000"}},
+ "platform": {"audit_logging": True, "mfa_enabled": True, "tags": {"owner": "platform-ops", "cost_center": "CC-1000"}},
 }
 
 for name, patch in (("half_fixed", half), ("clean", clean)):

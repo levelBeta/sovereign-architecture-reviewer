@@ -10,6 +10,6 @@
      "credentials": "shared_admin", "secrets_in_plaintext": true},
     {"id": "llm-endpoint", "type": "llm_endpoint", "auth": "none",
      "provider_api": "proprietary_only", "abstraction_layer": false, "egress": "unrestricted"},
-    {"id": "platform", "type": "platform", "audit_logging": false}
+      {"id": "platform", "type": "platform", "audit_logging": false, "mfa_enabled": false}
   ]
 }
