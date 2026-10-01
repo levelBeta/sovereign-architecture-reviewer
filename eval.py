@@ -3,8 +3,8 @@ from rules import evaluate
 from explain import explain
 
 EXPECTED = {
-    "configs/flawed.json": 17,
-    "configs/half_fixed.json": 13,
+    "configs/flawed.json": 24,
+    "configs/half_fixed.json": 20,
     "configs/clean.json": 0,
 }
 
