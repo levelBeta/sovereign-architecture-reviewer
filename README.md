@@ -28,7 +28,7 @@ the exact rule and evidence that triggered it.
 
 ## What it checks
 
-15 rules across 5 resource types (storage, database, service, LLM endpoint, platform),
+18 rules across 5 resource types (storage, database, service, LLM endpoint, platform),
 each mapped to:
 - An **AWS Well-Architected Framework** pillar (Security, Reliability, Cost
   Optimization, Operational Excellence)
@@ -42,9 +42,9 @@ partially-fixed / after state, proving the detection logic is consistent:
 
 | Config | Findings |
 |---|---|
-| `flawed.json` | 17 (3 critical, 9 high, 5 medium) |
-| `half_fixed.json` | 13 |
-| `clean.json` | 0 |
+   | `flawed.json` | 24 (3 critical, 11 high, 10 medium) |
+   | `half_fixed.json` | 20 |
+   | `clean.json` | 0 |
 
 ## Architecture
 
@@ -111,7 +111,7 @@ python eval.py
   by a qualified compliance professional.
 - All configs are **synthetic**. No real client or production data was used
   anywhere in this project.
-- Detection covers 15 rules across 5 resource types — a production system would
+- Detection covers 18 rules across 5 resource types — a production system would
   need a substantially larger rule set, likely driven by a proper policy-as-code
   engine (e.g. OPA/Rego) rather than hand-written Python.
 - Ingests simplified JSON, not real Terraform or CloudFormation — parsing actual
