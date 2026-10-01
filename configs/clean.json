@@ -8,7 +8,11 @@
       "region": "ap-southeast-2",
       "encrypted_at_rest": true,
       "public_access": false,
-      "versioning": true
+      "versioning": true,
+      "tags": {
+        "owner": "data-platform-team",
+        "cost_center": "CC-1001"
+      }
     },
     {
       "id": "customer-db",
@@ -17,7 +21,11 @@
       "region": "ap-southeast-2",
       "encrypted_at_rest": true,
       "publicly_accessible": false,
-      "backups": true
+      "backups": true,
+      "tags": {
+        "owner": "data-platform-team",
+        "cost_center": "CC-1001"
+      }
     },
     {
       "id": "inference-api",
@@ -31,7 +39,11 @@
         }
       ],
       "credentials": "workload_identity",
-      "secrets_in_plaintext": false
+      "secrets_in_plaintext": false,
+      "tags": {
+        "owner": "ml-platform-team",
+        "cost_center": "CC-1002"
+      }
     },
     {
       "id": "llm-endpoint",
@@ -39,12 +51,20 @@
       "auth": "oidc",
       "provider_api": "portable",
       "abstraction_layer": true,
-      "egress": "allowlist"
+      "egress": "allowlist",
+      "tags": {
+        "owner": "ml-platform-team",
+        "cost_center": "CC-1002"
+      }
     },
     {
       "id": "platform",
       "type": "platform",
-      "audit_logging": true
+      "audit_logging": true,
+      "tags": {
+        "owner": "platform-ops",
+        "cost_center": "CC-1000"
+      }
     }
   ]
 }

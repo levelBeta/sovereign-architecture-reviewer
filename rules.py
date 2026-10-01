@@ -39,6 +39,15 @@ def lockin(r):
     if r.get("provider_api") == "proprietary_only" and r.get("abstraction_layer") is False:
         return "model access hard-coded to one provider API"
 
+def missing_tags(r):
+    tags = r.get("tags")
+    if not tags:
+        return "no cost/ownership tags present"
+    required = {"owner", "cost_center"}
+    missing = required - set(tags.keys())
+    if missing:
+        return f"missing tag(s): {', '.join(sorted(missing))}"
+
 SEC, REL, COST, OPS = "Security", "Reliability", "Cost Optimization", "Operational Excellence"
 IMPL, CAP, CLASS, TEST = ("Implementation of controls", "Information security capability",
                           "Information asset identification and classification",
@@ -75,6 +84,9 @@ RULES = [
       "Enable versioning or backups with tested restores.",no_recovery),
  Rule("R15","Unrestricted egress from model workload","medium",("llm_endpoint",),SEC,IMPL,"Assume breach",False,
       "Apply an egress allowlist.",flag("egress","unrestricted","unrestricted outbound access")),
+ Rule("R18","Missing cost/ownership tags","medium",
+      ("object_storage","database","service","llm_endpoint","platform"),COST,CLASS,"n/a",False,
+      "Apply standard cost-center and owner tags to all resources.",missing_tags),
 ]
 
 def evaluate(config):
