@@ -116,3 +116,26 @@ def test_r05_ignores_private_cidr():
 
 def test_r05_ignores_missing_ingress():
     assert r05({"id": "syn-svc", "type": "service"}) == []
+
+
+def test_r05_boundary_around_443():
+    found = r05(svc([{"port": 442, "cidr": "0.0.0.0/0"},
+                     {"port": 443, "cidr": "0.0.0.0/0"},
+                     {"port": 444, "cidr": "0.0.0.0/0"}]))
+    assert [f["evidence"] for f in found] == ["open to the internet on port(s) 442, 444"]
+
+
+def test_r05_lookalike_cidr_not_flagged():
+    assert r05(svc([{"port": 22, "cidr": "0.0.0.0/1"}])) == []
+
+
+def test_r05_lists_every_open_port():
+    found = r05(svc([{"port": 22, "cidr": "0.0.0.0/0"},
+                     {"port": 8080, "cidr": "0.0.0.0/0"}]))
+    assert [f["evidence"] for f in found] == ["open to the internet on port(s) 22, 8080"]
+
+
+def test_r05_mixed_private_and_open():
+    found = r05(svc([{"port": 22, "cidr": "10.0.0.0/8"},
+                     {"port": 8080, "cidr": "0.0.0.0/0"}]))
+    assert [f["evidence"] for f in found] == ["open to the internet on port(s) 8080"]
