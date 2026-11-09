@@ -21,7 +21,7 @@ def flag(field, bad, msg):
     return lambda r: msg if r.get(field) == bad else None
 
 def open_ports(r):
-    bad = [str(p["port"]) for p in r.get("ingress", [])
+    bad = [str(p.get("port", "not specified")) for p in r.get("ingress", [])
            if p.get("cidr") == "0.0.0.0/0" and p.get("port") != 443]
     return f"open to the internet on port(s) {', '.join(bad)}" if bad else None
 

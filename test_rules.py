@@ -139,3 +139,13 @@ def test_r05_mixed_private_and_open():
     found = r05(svc([{"port": 22, "cidr": "10.0.0.0/8"},
                      {"port": 8080, "cidr": "0.0.0.0/0"}]))
     assert [f["evidence"] for f in found] == ["open to the internet on port(s) 8080"]
+
+
+def test_r05_flags_entry_with_no_port():
+    found = r05(svc([{"cidr": "0.0.0.0/0"}]))
+    assert [f["evidence"] for f in found] == ["open to the internet on port(s) not specified"]
+
+
+def test_r05_no_port_listed_after_known_port():
+    found = r05(svc([{"port": 22, "cidr": "0.0.0.0/0"}, {"cidr": "0.0.0.0/0"}]))
+    assert [f["evidence"] for f in found] == ["open to the internet on port(s) 22, not specified"]
