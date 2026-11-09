@@ -91,3 +91,28 @@ def test_r04_ignores_storage_field_name():
 def test_r04_does_not_apply_to_storage():
     res = {"id": "syn-bucket", "type": "object_storage", "publicly_accessible": True}
     assert "R04" not in rule_ids([res])
+
+
+def svc(ingress):
+    return {"id": "syn-svc", "type": "service", "ingress": ingress}
+
+
+def r05(res):
+    return [f for f in evaluate({"resources": [res]}) if f["rule"] == "R05"]
+
+
+def test_r05_flags_open_port():
+    found = r05(svc([{"port": 22, "cidr": "0.0.0.0/0"}]))
+    assert [f["evidence"] for f in found] == ["open to the internet on port(s) 22"]
+
+
+def test_r05_exempts_port_443():
+    assert r05(svc([{"port": 443, "cidr": "0.0.0.0/0"}])) == []
+
+
+def test_r05_ignores_private_cidr():
+    assert r05(svc([{"port": 22, "cidr": "10.0.0.0/8"}])) == []
+
+
+def test_r05_ignores_missing_ingress():
+    assert r05({"id": "syn-svc", "type": "service"}) == []
