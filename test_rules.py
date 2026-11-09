@@ -337,3 +337,30 @@ def test_r12_ignores_missing_data_class():
 def test_r12_does_not_apply_to_services():
     res = {"id": "syn-svc", "type": "service", "data_class": "regulated", "region": "us-east-1"}
     assert r12(res) == []
+
+
+def test_r12_every_au_region_passes():
+    for region in ["ap-southeast-2", "ap-southeast-4", "australiaeast",
+                   "australiasoutheast", "australia-southeast1", "australia-southeast2"]:
+        res = {"id": "syn-bucket", "type": "object_storage", "data_class": "regulated", "region": region}
+        assert r12(res) == [], region
+
+
+def test_r12_flags_lookalike_region():
+    res = {"id": "syn-bucket", "type": "object_storage", "data_class": "regulated", "region": "ap-southeast-1"}
+    assert r12(res) == ["regulated data hosted in ap-southeast-1"]
+
+
+def test_r12_region_match_is_case_sensitive():
+    res = {"id": "syn-bucket", "type": "object_storage", "data_class": "regulated", "region": "AP-SOUTHEAST-2"}
+    assert r12(res) == ["regulated data hosted in AP-SOUTHEAST-2"]
+
+
+def test_r12_missing_region_reports_none():
+    res = {"id": "syn-bucket", "type": "object_storage", "data_class": "regulated"}
+    assert r12(res) == ["regulated data hosted in None"]
+
+
+def test_r12_applies_to_databases():
+    res = {"id": "syn-db", "type": "database", "data_class": "regulated", "region": "us-east-1"}
+    assert r12(res) == ["regulated data hosted in us-east-1"]
