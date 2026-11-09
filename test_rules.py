@@ -254,3 +254,25 @@ def test_r09_ignores_missing_field():
 def test_r09_does_not_apply_to_databases():
     res = {"id": "syn-db", "type": "database", "secrets_in_plaintext": True}
     assert "R09" not in rule_ids([res])
+
+
+def test_r10_flags_platform_without_audit_logging():
+    res = {"id": "syn-platform", "type": "platform", "audit_logging": False}
+    found = [f for f in evaluate({"resources": [res]}) if f["rule"] == "R10"]
+    assert len(found) == 1
+    assert found[0]["evidence"] == "audit logging off"
+
+
+def test_r10_passes_platform_with_audit_logging():
+    res = {"id": "syn-platform", "type": "platform", "audit_logging": True}
+    assert "R10" not in rule_ids([res])
+
+
+def test_r10_ignores_missing_field():
+    res = {"id": "syn-platform", "type": "platform"}
+    assert "R10" not in rule_ids([res])
+
+
+def test_r10_does_not_apply_to_services():
+    res = {"id": "syn-svc", "type": "service", "audit_logging": False}
+    assert "R10" not in rule_ids([res])
