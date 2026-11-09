@@ -42,3 +42,25 @@ def test_r02_ignores_missing_field():
 def test_r02_does_not_apply_to_databases():
     res = {"id": "syn-db", "type": "database", "public_access": True}
     assert "R02" not in rule_ids([res])
+
+
+def test_r03_flags_unencrypted_database():
+    res = {"id": "syn-db", "type": "database", "encrypted_at_rest": False}
+    found = [f for f in evaluate({"resources": [res]}) if f["rule"] == "R03"]
+    assert len(found) == 1
+    assert found[0]["evidence"] == "encryption at rest disabled"
+
+
+def test_r03_passes_encrypted_database():
+    res = {"id": "syn-db", "type": "database", "encrypted_at_rest": True}
+    assert "R03" not in rule_ids([res])
+
+
+def test_r03_ignores_missing_field():
+    res = {"id": "syn-db", "type": "database"}
+    assert "R03" not in rule_ids([res])
+
+
+def test_r03_does_not_apply_to_storage():
+    res = {"id": "syn-bucket", "type": "object_storage", "encrypted_at_rest": False}
+    assert "R03" not in rule_ids([res])
