@@ -200,3 +200,35 @@ def test_r07_independent_of_tls_field():
 def test_r07_does_not_apply_to_databases():
     res = {"id": "syn-db", "type": "database", "mtls": False}
     assert "R07" not in rule_ids([res])
+
+
+def test_r08_flags_shared_admin_credentials():
+    res = {"id": "syn-svc", "type": "service", "credentials": "shared_admin"}
+    found = [f for f in evaluate({"resources": [res]}) if f["rule"] == "R08"]
+    assert len(found) == 1
+    assert found[0]["evidence"] == "shared admin credential in use"
+
+
+def test_r08_passes_other_credential_value():
+    res = {"id": "syn-svc", "type": "service", "credentials": "per_workload"}
+    assert "R08" not in rule_ids([res])
+
+
+def test_r08_ignores_missing_field():
+    res = {"id": "syn-svc", "type": "service"}
+    assert "R08" not in rule_ids([res])
+
+
+def test_r08_match_is_case_sensitive():
+    res = {"id": "syn-svc", "type": "service", "credentials": "SHARED_ADMIN"}
+    assert "R08" not in rule_ids([res])
+
+
+def test_r08_match_is_exact_with_trailing_space():
+    res = {"id": "syn-svc", "type": "service", "credentials": "shared_admin "}
+    assert "R08" not in rule_ids([res])
+
+
+def test_r08_does_not_apply_to_databases():
+    res = {"id": "syn-db", "type": "database", "credentials": "shared_admin"}
+    assert "R08" not in rule_ids([res])
