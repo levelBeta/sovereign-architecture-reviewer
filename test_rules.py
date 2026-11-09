@@ -308,3 +308,32 @@ def test_r11_match_is_exact_with_trailing_space():
 def test_r11_does_not_apply_to_services():
     res = {"id": "syn-svc", "type": "service", "auth": "none"}
     assert "R11" not in rule_ids([res])
+
+
+def r12(res):
+    return [f["evidence"] for f in evaluate({"resources": [res]}) if f["rule"] == "R12"]
+
+
+def test_r12_flags_regulated_data_outside_au():
+    res = {"id": "syn-bucket", "type": "object_storage", "data_class": "regulated", "region": "us-east-1"}
+    assert r12(res) == ["regulated data hosted in us-east-1"]
+
+
+def test_r12_passes_regulated_data_in_au():
+    res = {"id": "syn-bucket", "type": "object_storage", "data_class": "regulated", "region": "ap-southeast-2"}
+    assert r12(res) == []
+
+
+def test_r12_ignores_non_regulated_data():
+    res = {"id": "syn-bucket", "type": "object_storage", "data_class": "internal", "region": "us-east-1"}
+    assert r12(res) == []
+
+
+def test_r12_ignores_missing_data_class():
+    res = {"id": "syn-bucket", "type": "object_storage", "region": "us-east-1"}
+    assert r12(res) == []
+
+
+def test_r12_does_not_apply_to_services():
+    res = {"id": "syn-svc", "type": "service", "data_class": "regulated", "region": "us-east-1"}
+    assert r12(res) == []
