@@ -171,3 +171,32 @@ def test_r06_ignores_missing_field():
 def test_r06_does_not_apply_to_databases():
     res = {"id": "syn-db", "type": "database", "tls": False}
     assert "R06" not in rule_ids([res])
+
+
+def test_r07_flags_service_without_mtls():
+    res = {"id": "syn-svc", "type": "service", "mtls": False}
+    found = [f for f in evaluate({"resources": [res]}) if f["rule"] == "R07"]
+    assert len(found) == 1
+    assert found[0]["evidence"] == "mTLS not enforced"
+
+
+def test_r07_passes_service_with_mtls():
+    res = {"id": "syn-svc", "type": "service", "mtls": True}
+    assert "R07" not in rule_ids([res])
+
+
+def test_r07_ignores_missing_field():
+    res = {"id": "syn-svc", "type": "service"}
+    assert "R07" not in rule_ids([res])
+
+
+def test_r07_independent_of_tls_field():
+    res = {"id": "syn-svc", "type": "service", "tls": False}
+    ids = rule_ids([res])
+    assert "R06" in ids
+    assert "R07" not in ids
+
+
+def test_r07_does_not_apply_to_databases():
+    res = {"id": "syn-db", "type": "database", "mtls": False}
+    assert "R07" not in rule_ids([res])
