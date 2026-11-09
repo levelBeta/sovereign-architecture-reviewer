@@ -64,3 +64,30 @@ def test_r03_ignores_missing_field():
 def test_r03_does_not_apply_to_storage():
     res = {"id": "syn-bucket", "type": "object_storage", "encrypted_at_rest": False}
     assert "R03" not in rule_ids([res])
+
+
+def test_r04_flags_public_database():
+    res = {"id": "syn-db", "type": "database", "publicly_accessible": True}
+    found = [f for f in evaluate({"resources": [res]}) if f["rule"] == "R04"]
+    assert len(found) == 1
+    assert found[0]["evidence"] == "reachable from the internet"
+
+
+def test_r04_passes_private_database():
+    res = {"id": "syn-db", "type": "database", "publicly_accessible": False}
+    assert "R04" not in rule_ids([res])
+
+
+def test_r04_ignores_missing_field():
+    res = {"id": "syn-db", "type": "database"}
+    assert "R04" not in rule_ids([res])
+
+
+def test_r04_ignores_storage_field_name():
+    res = {"id": "syn-db", "type": "database", "public_access": True}
+    assert "R04" not in rule_ids([res])
+
+
+def test_r04_does_not_apply_to_storage():
+    res = {"id": "syn-bucket", "type": "object_storage", "publicly_accessible": True}
+    assert "R04" not in rule_ids([res])
