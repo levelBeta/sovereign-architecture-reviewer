@@ -276,3 +276,35 @@ def test_r10_ignores_missing_field():
 def test_r10_does_not_apply_to_services():
     res = {"id": "syn-svc", "type": "service", "audit_logging": False}
     assert "R10" not in rule_ids([res])
+
+
+def test_r11_flags_endpoint_without_auth():
+    res = {"id": "syn-llm", "type": "llm_endpoint", "auth": "none"}
+    found = [f for f in evaluate({"resources": [res]}) if f["rule"] == "R11"]
+    assert len(found) == 1
+    assert found[0]["evidence"] == "no authentication"
+
+
+def test_r11_passes_endpoint_with_auth():
+    res = {"id": "syn-llm", "type": "llm_endpoint", "auth": "oidc"}
+    assert "R11" not in rule_ids([res])
+
+
+def test_r11_ignores_missing_field():
+    res = {"id": "syn-llm", "type": "llm_endpoint"}
+    assert "R11" not in rule_ids([res])
+
+
+def test_r11_match_is_case_sensitive():
+    res = {"id": "syn-llm", "type": "llm_endpoint", "auth": "None"}
+    assert "R11" not in rule_ids([res])
+
+
+def test_r11_match_is_exact_with_trailing_space():
+    res = {"id": "syn-llm", "type": "llm_endpoint", "auth": "none "}
+    assert "R11" not in rule_ids([res])
+
+
+def test_r11_does_not_apply_to_services():
+    res = {"id": "syn-svc", "type": "service", "auth": "none"}
+    assert "R11" not in rule_ids([res])
