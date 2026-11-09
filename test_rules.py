@@ -232,3 +232,25 @@ def test_r08_match_is_exact_with_trailing_space():
 def test_r08_does_not_apply_to_databases():
     res = {"id": "syn-db", "type": "database", "credentials": "shared_admin"}
     assert "R08" not in rule_ids([res])
+
+
+def test_r09_flags_plaintext_secrets():
+    res = {"id": "syn-svc", "type": "service", "secrets_in_plaintext": True}
+    found = [f for f in evaluate({"resources": [res]}) if f["rule"] == "R09"]
+    assert len(found) == 1
+    assert found[0]["evidence"] == "plaintext secrets in config"
+
+
+def test_r09_passes_when_secrets_not_plaintext():
+    res = {"id": "syn-svc", "type": "service", "secrets_in_plaintext": False}
+    assert "R09" not in rule_ids([res])
+
+
+def test_r09_ignores_missing_field():
+    res = {"id": "syn-svc", "type": "service"}
+    assert "R09" not in rule_ids([res])
+
+
+def test_r09_does_not_apply_to_databases():
+    res = {"id": "syn-db", "type": "database", "secrets_in_plaintext": True}
+    assert "R09" not in rule_ids([res])
