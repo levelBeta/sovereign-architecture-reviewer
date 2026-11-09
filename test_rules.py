@@ -149,3 +149,25 @@ def test_r05_flags_entry_with_no_port():
 def test_r05_no_port_listed_after_known_port():
     found = r05(svc([{"port": 22, "cidr": "0.0.0.0/0"}, {"cidr": "0.0.0.0/0"}]))
     assert [f["evidence"] for f in found] == ["open to the internet on port(s) 22, not specified"]
+
+
+def test_r06_flags_service_without_tls():
+    res = {"id": "syn-svc", "type": "service", "tls": False}
+    found = [f for f in evaluate({"resources": [res]}) if f["rule"] == "R06"]
+    assert len(found) == 1
+    assert found[0]["evidence"] == "TLS disabled"
+
+
+def test_r06_passes_service_with_tls():
+    res = {"id": "syn-svc", "type": "service", "tls": True}
+    assert "R06" not in rule_ids([res])
+
+
+def test_r06_ignores_missing_field():
+    res = {"id": "syn-svc", "type": "service"}
+    assert "R06" not in rule_ids([res])
+
+
+def test_r06_does_not_apply_to_databases():
+    res = {"id": "syn-db", "type": "database", "tls": False}
+    assert "R06" not in rule_ids([res])
